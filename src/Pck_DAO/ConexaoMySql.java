@@ -10,14 +10,14 @@ public class ConexaoMySql {
        jdbc:mysql indica que será usado o driver MySQL.
        localhost indica que o banco está na própria máquina.
        3306 é a porta padrão do MySQL.
-       bd_mvc_simplificado é o nome do banco utilizado no exemplo. */
-    private static final String URL = "jdbc:mysql://localhost:3306/bd_mvc_simplificado";
+        */
+    private static final String URL = "jdbc:mysql://localhost:3306/sebo_sistema";
 
     /* Usuário utilizado para acessar o MySQL. */
     private static final String USUARIO = "root";
 
     /* Senha utilizada para acessar o MySQL. */
-    private static final String SENHA = "P@$$word";
+    private static final String SENHA = "senha";
 
     /* Método responsável por abrir a conexão. Ele retorna um objeto Connection.
        Esse objeto representa a conexão ativa com o banco de dados. */
