@@ -1,30 +1,33 @@
 package Pck_Persistencia;
 
+import Pck_DAO.ConexaoMySql;
+import Pck_Model.VendaModel;
+
 import java.sql.*;
 import java.util.ArrayList;
-import Pck_DAO.ConexaoMySql;
-import Pck_Model.PrateleiraModel;
 
-public class PrateleiraPersistencia {
+public class VendaPersistencia {
 
-    public ArrayList<PrateleiraModel> listarPrateleiras() {
-        ArrayList<PrateleiraModel> lista = new ArrayList<>();
+    public ArrayList<VendaModel> listarVendas() {
+        ArrayList<VendaModel> lista = new ArrayList<>();
         Connection conexao = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
             conexao = ConexaoMySql.conectar();
-            ps = conexao.prepareStatement("SELECT * FROM prateleira");
+            ps = conexao.prepareStatement("SELECT * FROM venda");
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                PrateleiraModel p = new PrateleiraModel();
-                p.setId_prateleira(rs.getInt("id_prateleira"));
-                p.setNumero(rs.getInt("numero"));
-                p.setTipo(rs.getString("tipo"));
-                p.setLugar(rs.getString("lugar"));
-                lista.add(p);
+                VendaModel v = new VendaModel();
+                v.setId_venda(rs.getInt("id_venda"));
+                v.setCodigo_recibo(rs.getString("codigo_recibo"));
+                v.setValor_total(rs.getDouble("valor_total"));
+                v.setData_venda(rs.getString("data_venda"));
+                v.setForma_pagamento(rs.getString("forma_pagamento"));
+                v.setId_usuario(rs.getInt("id_usuario"));
+                lista.add(v);
             }
         } catch (SQLException erro) {
             erro.printStackTrace();
@@ -35,17 +38,19 @@ public class PrateleiraPersistencia {
         return lista;
     }
 
-    public void inserirPrateleira(PrateleiraModel oPrateleiraModel) {
+    public void inserirVenda(VendaModel oVendaModel) {
         Connection conexao = null;
         CallableStatement chamada = null;
 
         try {
             conexao = ConexaoMySql.conectar();
-            chamada = conexao.prepareCall("{call insere_prateleira(?, ?, ?)}");
+            chamada = conexao.prepareCall("{call insere_venda(?, ?, ?, ?, ?)}");
 
-            chamada.setInt(1, oPrateleiraModel.getNumero());
-            chamada.setString(2, oPrateleiraModel.getTipo());
-            chamada.setString(3, oPrateleiraModel.getLugar());
+            chamada.setDouble(1, oVendaModel.getValor_total());
+            chamada.setString(2, oVendaModel.getCodigo_recibo());
+            chamada.setString(3, oVendaModel.getForma_pagamento());
+            chamada.setString(4, oVendaModel.getData_venda());
+            chamada.setInt(5, oVendaModel.getId_usuario());
 
             chamada.execute();
         } catch (SQLException erro) {
@@ -56,18 +61,20 @@ public class PrateleiraPersistencia {
         }
     }
 
-    public void atualizarPrateleira(PrateleiraModel oPrateleiraModel) {
+    public void atualizarVenda(VendaModel oVendaModel) {
         Connection conexao = null;
         CallableStatement chamada = null;
 
         try {
             conexao = ConexaoMySql.conectar();
-            chamada = conexao.prepareCall("{call up_prateleira(?, ?, ?, ?)}");
+            chamada = conexao.prepareCall("{call up_venda(?, ?, ?, ?, ?, ?)}");
 
-            chamada.setInt(1, oPrateleiraModel.getId_prateleira());
-            chamada.setInt(2, oPrateleiraModel.getNumero());
-            chamada.setString(3, oPrateleiraModel.getTipo());
-            chamada.setString(4, oPrateleiraModel.getLugar());
+            chamada.setDouble(1, oVendaModel.getValor_total());
+            chamada.setString(2, oVendaModel.getCodigo_recibo());
+            chamada.setString(3, oVendaModel.getForma_pagamento());
+            chamada.setString(4, oVendaModel.getData_venda());
+            chamada.setInt(5, oVendaModel.getId_usuario());
+            chamada.setInt(6, oVendaModel.getId_venda());
 
             chamada.execute();
         } catch (SQLException erro) {
@@ -78,16 +85,14 @@ public class PrateleiraPersistencia {
         }
     }
 
-    public void removerPrateleira(int id) {
+    public void deletarVenda(int id_venda) {
         Connection conexao = null;
         CallableStatement chamada = null;
 
         try {
             conexao = ConexaoMySql.conectar();
-            chamada = conexao.prepareCall("{call delete_prateleira(?)}");
-
-            chamada.setInt(1, id);
-
+            chamada = conexao.prepareCall("{call delete_venda(?)}");
+            chamada.setInt(1, id_venda);
             chamada.execute();
         } catch (SQLException erro) {
             erro.printStackTrace();
