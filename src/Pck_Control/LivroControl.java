@@ -6,7 +6,7 @@ import Pck_Persistencia.LivroPersistencia;
 public class LivroControl {
     LivroPersistencia oLivroPersistencia = new LivroPersistencia();
 
-    public void inserirLivro(String titulo, String autor, String genero, String preco, String idPrateleira) {
+    public void inserirLivro(String titulo, String autor, String genero, String preco, String status, String idPrateleira) {
         LivroModel oLivroModel = new LivroModel();
 
         oLivroModel.setTitulo(titulo);
@@ -15,6 +15,9 @@ public class LivroControl {
 
         // Conversões necessárias para o banco
         oLivroModel.setPreco(Double.parseDouble(preco.replace(",", ".")));
+
+        oLivroModel.setStatus(status); // adicionado status! 22/05/2026
+
         oLivroModel.setId_prateleira(Integer.parseInt(idPrateleira));
 
         oLivroPersistencia.inserirLivro(oLivroModel);
