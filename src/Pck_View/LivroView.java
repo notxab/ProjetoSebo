@@ -16,11 +16,13 @@ public class LivroView extends JFrame implements ActionListener {
     JButton jb_inserir;
     LivroControl oLivroControl = new LivroControl();
 
+    private static LivroView instanciaUnica;
+
     public LivroView() {
         setTitle("Sistema de Sebo - Cadastro de Livros");
         setBounds(100, 100, 900, 480);
         setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(null);
 
         // 1. Título
@@ -110,6 +112,20 @@ public class LivroView extends JFrame implements ActionListener {
             }
         }
     }
+
+    public static LivroView getInstancia() {
+        if (instanciaUnica == null) {
+            instanciaUnica = new LivroView();
+        }
+        return instanciaUnica;
+    }
+
+    public void dispose() {
+        super.dispose();
+        instanciaUnica = null;
+    }
+
+
 
     private void limparCampos() {
         jt_titulo.setText("");
