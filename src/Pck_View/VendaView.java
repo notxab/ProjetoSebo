@@ -1,127 +1,124 @@
 package Pck_View;
 
-import Pck_Control.VendaControl;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import Pck_Control.VendaControl;
+import Pck_Model.VendaModel;
 
 public class VendaView extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
+    private int idEmEdicao = 0;
 
-    JLabel jl_valor, jl_codigo, jl_formapag, jl_data, jl_id_usuario;
-    JTextField jt_valor, jt_codigo, jt_data, jt_id_usuario;
-
+    // Campos restantes
+    JLabel jl_valor, jl_formapag, jl_id_usuario;
+    JTextField jt_valor, jt_id_usuario;
     JComboBox<String> jc_formapag;
 
-    JButton jb_inserir;
+    JButton jb_salvar, jb_deletar;
+    JTable tabela;
+    DefaultTableModel modelo;
     VendaControl oVendaControl = new VendaControl();
-
     private static VendaView instanciaUnica;
 
     private VendaView() {
-        setTitle("Sebo Ruído Branco - Registro de Vendas");
-        setBounds(100, 100, 420, 360);
+        setTitle("Sebo - Registro de Vendas");
+        setBounds(100, 100, 500, 600);
         setResizable(false);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        getContentPane().setLayout(null);
+        setLayout(null);
 
-        jl_codigo = new JLabel("Cód. Recibo:");
-        jl_codigo.setBounds(20, 20, 100, 20);
-        jt_codigo = new JTextField(gerarCodigoRecibo());
-        jt_codigo.setBounds(130, 20, 230, 20);
-        jt_codigo.setEnabled(false);
+        // Layout simplificado
+        jl_id_usuario = new JLabel("ID Usuário:"); jl_id_usuario.setBounds(20, 20, 100, 20);
+        jt_id_usuario = new JTextField(); jt_id_usuario.setBounds(130, 20, 230, 20);
+        jl_valor = new JLabel("Valor:"); jl_valor.setBounds(20, 50, 100, 20);
+        jt_valor = new JTextField(); jt_valor.setBounds(130, 50, 230, 20);
+        jl_formapag = new JLabel("Pagamento:"); jl_formapag.setBounds(20, 80, 100, 20);
+        jc_formapag = new JComboBox<>(new String[]{"Dinheiro", "Cartão", "Pix"});
+        jc_formapag.setBounds(130, 80, 230, 20);
 
-        jl_data = new JLabel("Data/Hora:");
-        jl_data.setBounds(20, 60, 100, 20);
-        jt_data = new JTextField(getComDataAtual());
-        jt_data.setBounds(130, 60, 230, 20);
-        jt_data.setEnabled(false);
+        jb_salvar = new JButton("Salvar"); jb_salvar.setBounds(50, 140, 140, 30); jb_salvar.addActionListener(this);
+        jb_deletar = new JButton("Deletar"); jb_deletar.setBounds(200, 140, 140, 30); jb_deletar.addActionListener(this);
 
-        jl_id_usuario = new JLabel("ID Operador:");
-        jl_id_usuario.setBounds(20, 100, 100, 20);
-        jt_id_usuario = new JTextField("1");
-        jt_id_usuario.setBounds(130, 100, 230, 20);
-        jt_id_usuario.setEnabled(false);
+        modelo = new DefaultTableModel(new Object[]{"ID", "Código", "Valor", "Data", "Pagamento", "ID Usuário"}, 0);
+        tabela = new JTable(modelo);
+        JScrollPane scroll = new JScrollPane(tabela);
+        scroll.setBounds(20, 200, 440, 330);
 
-        jl_valor = new JLabel("Valor Total (R$):");
-        jl_valor.setBounds(20, 140, 100, 20);
-        jt_valor = new JTextField("50.00");
-        jt_valor.setBounds(130, 140, 230, 20);
-
-        jl_formapag = new JLabel("Forma Pagamento:");
-        jl_formapag.setBounds(20, 180, 120, 20);
-        String[] opcoesPagamento = {"Dinheiro", "Cartão de Crédito", "Cartão de Débito", "Pix"};
-        jc_formapag = new JComboBox<>(opcoesPagamento);
-        jc_formapag.setBounds(130, 180, 230, 20);
-
-        jb_inserir = new JButton("Finalizar Venda");
-        jb_inserir.setBounds(130, 240, 150, 35);
-        jb_inserir.addActionListener(this);
-
-        getContentPane().add(jl_codigo);
-        getContentPane().add(jt_codigo);
-        getContentPane().add(jl_data);
-        getContentPane().add(jt_data);
-        getContentPane().add(jl_id_usuario);
-        getContentPane().add(jt_id_usuario);
-        getContentPane().add(jl_valor);
-        getContentPane().add(jt_valor);
-        getContentPane().add(jl_formapag);
-        getContentPane().add(jc_formapag);
-        getContentPane().add(jb_inserir);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == jb_inserir) {
-            try {
-                String formaSelecionada = (String) jc_formapag.getSelectedItem();
-
-                oVendaControl.inserirVenda(
-                        Double.parseDouble(jt_valor.getText()),
-                        jt_codigo.getText(),
-                        formaSelecionada,
-                        jt_data.getText(),
-                        Integer.parseInt(jt_id_usuario.getText())
-                );
-
-                JOptionPane.showMessageDialog(null, "Venda registrada com sucesso no banco de dados!");
-
-                jt_codigo.setText(gerarCodigoRecibo());
-                jt_data.setText(getComDataAtual());
-
-            } catch (Exception erro) {
-                JOptionPane.showMessageDialog(null, "Erro ao processar venda: " + erro.getMessage());
+        tabela.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int linha = tabela.getSelectedRow();
+                if (linha != -1) {
+                    // Prepara apenas os campos que existem
+                    prepararParaEdicao(
+                            (int) modelo.getValueAt(linha, 0),
+                            (double) modelo.getValueAt(linha, 2),
+                            (int) modelo.getValueAt(linha, 5)
+                    );
+                }
             }
-        }
+        });
+
+        add(jl_id_usuario); add(jt_id_usuario);
+        add(jl_valor); add(jt_valor);
+        add(jl_formapag); add(jc_formapag);
+        add(jb_salvar); add(jb_deletar); add(scroll);
+
+        atualizarTabela();
     }
 
     public static VendaView getInstancia() {
-        if (instanciaUnica == null) {
-            instanciaUnica = new VendaView();
-        }
+        if (instanciaUnica == null) instanciaUnica = new VendaView();
         return instanciaUnica;
     }
 
+    public void atualizarTabela() {
+        modelo.setRowCount(0);
+        for (VendaModel v : oVendaControl.listarVendas()) {
+            modelo.addRow(new Object[]{v.getId_venda(), v.getCodigo_recibo(), v.getValor_total(), v.getData_venda(), v.getForma_pagamento(), v.getId_usuario()});
+        }
+    }
+
+    public void prepararParaEdicao(int id, double val, int usr) {
+        this.idEmEdicao = id;
+        jb_salvar.setText("Atualizar");
+        jt_valor.setText(String.valueOf(val));
+        jt_id_usuario.setText(String.valueOf(usr));
+    }
+
+    private void limparCampos() {
+        jt_id_usuario.setText(""); jt_valor.setText("");
+        idEmEdicao = 0;
+        jb_salvar.setText("Salvar");
+    }
+
     @Override
-    public void dispose() {
-        super.dispose();
-        instanciaUnica = null;
-    }
+    public void dispose() { super.dispose(); instanciaUnica = null; }
 
-    private String gerarCodigoRecibo() {
-        return "REC-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == jb_salvar) {
+            String codigoAuto = "VEN-" + System.currentTimeMillis();
+            String dataAuto = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-    private String getComDataAtual() {
-        SimpleDateFormat formatador = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return formatador.format(new Date());
-    }
-
-    public static void main(String[] args) {
-        VendaView.getInstancia().setVisible(true);
+            if (idEmEdicao == 0) {
+                oVendaControl.inserirVenda(Double.parseDouble(jt_valor.getText()), codigoAuto, (String)jc_formapag.getSelectedItem(), dataAuto, Integer.parseInt(jt_id_usuario.getText()));
+            } else {
+                // Para atualização, pegamos o código e data da tabela ou mantemos o original se necessário
+                // Aqui estamos mantendo os valores originais da linha (simplificado)
+                oVendaControl.atualizarVenda(idEmEdicao, Double.parseDouble(jt_valor.getText()), "N/A", (String)jc_formapag.getSelectedItem(), "N/A", Integer.parseInt(jt_id_usuario.getText()));
+            }
+            limparCampos();
+            atualizarTabela();
+        } else if (e.getSource() == jb_deletar) {
+            if (idEmEdicao != 0) {
+                oVendaControl.removerVenda(idEmEdicao);
+                limparCampos();
+                atualizarTabela();
+            }
+        }
     }
 }
