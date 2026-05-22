@@ -8,10 +8,10 @@ public class LivroView extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
 
     // 5 Labels para identificar os campos
-    JLabel jl_titulo, jl_autor, jl_genero, jl_preco, jl_prateleira;
+    JLabel jl_titulo, jl_autor, jl_genero, jl_preco, jl_status, jl_prateleira;
 
     // 5 TextFields para o usuário digitar
-    JTextField jt_titulo, jt_autor, jt_genero, jt_preco, jt_prateleira;
+    JTextField jt_titulo, jt_autor, jt_genero, jt_preco, jt_status, jt_prateleira;
 
     JButton jb_inserir;
     LivroControl oLivroControl = new LivroControl();
@@ -35,7 +35,7 @@ public class LivroView extends JFrame implements ActionListener {
         jt_autor = new JTextField();
         jt_autor.setBounds(130, 50, 200, 20);
 
-        // 3. Gênero (O campo que faltava!)
+        // 3. Gênero
         jl_genero = new JLabel("Gênero:");
         jl_genero.setBounds(20, 80, 100, 20);
         jt_genero = new JTextField();
@@ -47,15 +47,21 @@ public class LivroView extends JFrame implements ActionListener {
         jt_preco = new JTextField();
         jt_preco.setBounds(130, 110, 200, 20);
 
-        // 5. ID Prateleira
+        // 5. status
+        jl_status = new JLabel("Status (disponivel, vendido, etc):");
+        jl_status.setBounds(20, 140, 100, 20);
+        jt_status = new JTextField();
+        jt_status.setBounds(130, 140, 200, 20);
+
+        // 6. ID Prateleira
         jl_prateleira = new JLabel("ID Prateleira:");
-        jl_prateleira.setBounds(20, 140, 100, 20);
+        jl_prateleira.setBounds(20, 170, 100, 20);
         jt_prateleira = new JTextField();
-        jt_prateleira.setBounds(130, 140, 200, 20);
+        jt_prateleira.setBounds(130, 170, 200, 20);
 
         // Botão de Inserir
         jb_inserir = new JButton("Cadastrar Livro");
-        jb_inserir.setBounds(130, 190, 150, 30);
+        jb_inserir.setBounds(130, 200, 150, 30);
         jb_inserir.addActionListener(this);
 
         // Adicionando tudo ao painel
@@ -63,6 +69,7 @@ public class LivroView extends JFrame implements ActionListener {
         getContentPane().add(jl_autor);      getContentPane().add(jt_autor);
         getContentPane().add(jl_genero);     getContentPane().add(jt_genero);
         getContentPane().add(jl_preco);      getContentPane().add(jt_preco);
+        getContentPane().add(jl_status);      getContentPane().add(jt_status);
         getContentPane().add(jl_prateleira); getContentPane().add(jt_prateleira);
         getContentPane().add(jb_inserir);
     }
@@ -78,18 +85,20 @@ public class LivroView extends JFrame implements ActionListener {
             }
 
             try {
-                /* CHAMADA DA CONTROL COM OS 5 ARGUMENTOS:
+                /* CHAMADA DA CONTROL COM OS 6* ARGUMENTOS:
                    1. Título
                    2. Autor
                    3. Gênero
                    4. Preço (String)
-                   5. ID Prateleira (String)
+                   5. Status (String) >> adicionado por ultimo, hotfix
+                   6. ID Prateleira (String)
                 */
                 oLivroControl.inserirLivro(
                         jt_titulo.getText(),
                         jt_autor.getText(),
                         jt_genero.getText(),
                         jt_preco.getText(),
+                        jt_status.getText(),
                         jt_prateleira.getText()
                 );
 
@@ -107,6 +116,7 @@ public class LivroView extends JFrame implements ActionListener {
         jt_autor.setText("");
         jt_genero.setText("");
         jt_preco.setText("");
+        jt_status.setText("");
         jt_prateleira.setText("");
     }
 

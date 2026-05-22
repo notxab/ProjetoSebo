@@ -13,14 +13,15 @@ public class LivroPersistencia {
 
         try {
             conexao = ConexaoMySql.conectar();
-            // A procedure sp_cadastrar_livro tem 5 parâmetros de entrada
-            chamada = conexao.prepareCall("{call sp_cadastrar_livro(?, ?, ?, ?, ?)}");
+            // A procedure *insere_livro tem 5 parâmetros de entrada
+            chamada = conexao.prepareCall("{call insere_livro(?, ?, ?, ?, ?, ?)}");
 
             chamada.setString(1, oLivroModel.getTitulo());
             chamada.setString(2, oLivroModel.getAutor());
             chamada.setString(3, oLivroModel.getGenero());
             chamada.setDouble(4, oLivroModel.getPreco());
-            chamada.setInt(5, oLivroModel.getId_prateleira());
+            chamada.setString(5, oLivroModel.getStatus()); // status arrumado 22/05/2026
+            chamada.setInt(6, oLivroModel.getId_prateleira());
 
             chamada.execute();
         } catch (SQLException erro) {
