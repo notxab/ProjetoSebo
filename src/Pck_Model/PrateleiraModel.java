@@ -9,7 +9,7 @@ public class PrateleiraModel {
 
     // Getters e Setters
     public int getId_prateleira() { return id_prateleira; }
-    public void setId_prateleira(int prateleira) { this.id_prateleira = id_prateleira; }
+    public void setId_prateleira(int id_prateleira) { this.id_prateleira = id_prateleira; }
 
     public int getNumero() { return numero; }
     public void setNumero(int numero) { this.numero = numero; }

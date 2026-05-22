@@ -11,7 +11,7 @@ public class MenuView extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
 
     JLabel jl_tituloMenu;
-    JButton jb_menuLivro, jb_menuPrateleira;
+    JButton jb_menuLivro, jb_menuPrateleira, jb_menuVenda;
 
     public MenuView() {
 
@@ -34,9 +34,14 @@ public class MenuView extends JFrame implements ActionListener {
         jb_menuPrateleira.setBounds(100, 150, 180, 35);
         jb_menuPrateleira.addActionListener(this);
 
+        jb_menuVenda = new JButton("Gerenciar Vendas");
+        jb_menuVenda.setBounds(100, 200, 180, 35);
+        jb_menuVenda.addActionListener(this);
+
         getContentPane().add(jl_tituloMenu);
         getContentPane().add(jb_menuLivro);
         getContentPane().add(jb_menuPrateleira);
+        getContentPane().add(jb_menuVenda);
 
 
     }
@@ -55,6 +60,14 @@ public class MenuView extends JFrame implements ActionListener {
             telaPrateleira.setVisible(true);
             telaPrateleira.toFront();
         }
+
+        if (e.getSource() == jb_menuVenda) {
+            VendaView telaVenda = VendaView.getInstancia();
+            telaVenda.setVisible(true);
+            telaVenda.toFront();
+        }
+
+
     }
 
 
