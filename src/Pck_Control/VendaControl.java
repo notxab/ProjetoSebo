@@ -12,7 +12,7 @@ public class VendaControl {
         return oVendaPersistencia.listarVendas();
     }
 
-    public void inserirVenda(double valorTotal, String codigoRecibo, String formaPagamento, String dataVenda, int idUsuario) {
+    public void inserirVenda(double valorTotal, String codigoRecibo, String formaPagamento, String dataVenda, int idUsuario, int idLivro) {
         VendaModel oVendaModel = new VendaModel();
 
         oVendaModel.setValor_total(valorTotal);
@@ -21,7 +21,11 @@ public class VendaControl {
         oVendaModel.setData_venda(dataVenda);
         oVendaModel.setId_usuario(idUsuario);
 
-        oVendaPersistencia.inserirVenda(oVendaModel);
+        int idVendaGerado = oVendaPersistencia.inserirVenda(oVendaModel);
+
+        if (idVendaGerado != -1) {
+            oVendaPersistencia.vincularLivroAVenda(idLivro);
+        }
     }
 
     public void atualizarVenda(int idVenda, double valorTotal, String codigoRecibo, String formaPagamento, String dataVenda, int idUsuario) {
