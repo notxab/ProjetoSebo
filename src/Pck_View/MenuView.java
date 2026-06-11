@@ -38,6 +38,7 @@ public class MenuView extends JFrame implements ActionListener {
         jb_menuVenda.setBounds(100, 200, 180, 35);
         jb_menuVenda.addActionListener(this);
 
+
         getContentPane().add(jl_tituloMenu);
         getContentPane().add(jb_menuLivro);
         getContentPane().add(jb_menuPrateleira);

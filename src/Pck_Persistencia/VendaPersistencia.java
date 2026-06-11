@@ -38,20 +38,41 @@ public class VendaPersistencia {
         return lista;
     }
 
-    public void inserirVenda(VendaModel oVendaModel) {
+    public int inserirVenda(VendaModel oVendaModel) {
         Connection conexao = null;
         CallableStatement chamada = null;
+        int idGerado = -1;
 
         try {
             conexao = ConexaoMySql.conectar();
-            chamada = conexao.prepareCall("{call insere_venda(?, ?, ?, ?, ?)}");
+            chamada = conexao.prepareCall("{call insere_venda(?, ?, ?, ?, ?, ?)}");
 
             chamada.setDouble(1, oVendaModel.getValor_total());
             chamada.setString(2, oVendaModel.getCodigo_recibo());
             chamada.setString(3, oVendaModel.getForma_pagamento());
             chamada.setString(4, oVendaModel.getData_venda());
             chamada.setInt(5, oVendaModel.getId_usuario());
+            chamada.registerOutParameter(6, Types.INTEGER);
 
+            chamada.execute();
+            idGerado = chamada.getInt(6);
+        } catch (SQLException erro) {
+            erro.printStackTrace();
+        } finally {
+            try { if (chamada != null) chamada.close(); } catch (SQLException e) { e.printStackTrace(); }
+            ConexaoMySql.fechar(conexao);
+        }
+        return idGerado;
+    }
+
+    public void vincularLivroAVenda(int idLivro) {
+        Connection conexao = null;
+        CallableStatement chamada = null;
+
+        try {
+            conexao = ConexaoMySql.conectar();
+            chamada = conexao.prepareCall("{call vincula_livro_venda(?)}");
+            chamada.setInt(1, idLivro);
             chamada.execute();
         } catch (SQLException erro) {
             erro.printStackTrace();
